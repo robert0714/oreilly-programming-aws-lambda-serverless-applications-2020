@@ -40,3 +40,124 @@ or via the CLI using `aws lambda invoke`.
     * https://github.com/aosolorzano/city-tasks-lambda-native-with-dynamodb
   * https://docs.aws.amazon.com/lambda/latest/dg/testing-guide.html
   * https://docs.aws.amazon.com/zh_tw/codebuild/latest/userguide/sample-lambda-sam-gradle.html
+
+
+#### Handler: book.HelloWorld::handler
+* Let’s get back to invocation(notice the parameter: `--cli-binary-format raw-in-base64-out`). From the terminal, run the following command:
+  ```bash
+  $ aws lambda invoke  \
+    --invocation-type RequestResponse  \
+    --function-name HelloWorldJava \
+    --cli-binary-format raw-in-base64-out \
+    --payload \"world\" outputfile.txt
+  ```
+  This should return the following:
+  ```json
+  {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  }
+  ```
+#### Handler: book.ListMapLambda::handlerList
+* Let’s get back to invocation(notice the parameter: `--cli-binary-format raw-in-base64-out`). From the terminal, run the following command:
+  ```bash
+  $ aws lambda invoke  \
+    --invocation-type RequestResponse  \
+    --function-name HelloWorldJava \
+    --cli-binary-format raw-in-base64-out \
+    --payload "[ 1, 2, 3 ]"  outputfile.txt
+  ```
+  This should return the following:
+  ```json
+  {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  }
+  ```
+#### Handler: book.ListMapLambda::handlerMap
+* Let’s get back to invocation(notice the parameter: `--cli-binary-format raw-in-base64-out`). From the terminal, run the following command:
+  ```bash
+  $ aws lambda invoke  \
+    --invocation-type RequestResponse  \
+    --function-name HelloWorldJava \
+    --cli-binary-format raw-in-base64-out \
+    --payload '{ "a" : "x", "b" : "y"}'  outputfile.txt
+  ```
+  This should return the following:
+  ```json
+  {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  }
+  ```
+#### Handler: book.ListMapLambda::handlerNestedCollection
+* Let’s get back to invocation(notice the parameter: `--cli-binary-format raw-in-base64-out`). From the terminal, run the following command:
+  ```bash
+  $ aws lambda invoke  \
+    --invocation-type RequestResponse  \
+    --function-name HelloWorldJava \
+    --cli-binary-format raw-in-base64-out \
+    --payload '[  { "m" : 1, "n" : 2 },   { "x" : 8, "y" : 9 } ]'  outputfile.txt
+  ```
+  This should return the following:
+  ```json
+  {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  }
+  ```
+#### Handler: book.PojoLambda::handlerPojo
+* Let’s get back to invocation(notice the parameter: `--cli-binary-format raw-in-base64-out`). From the terminal, run the following command:
+  ```bash
+  $ aws lambda invoke  \
+    --invocation-type RequestResponse  \
+    --function-name HelloWorldJava \
+    --cli-binary-format raw-in-base64-out \
+    --payload '{ "a" : "Hello Lambda" }'  outputfile.txt
+  ``` 
+  This should return the following:
+  ```json
+  {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  }
+  ```
+#### Handler: book.StreamLambda::handlerStream
+* Let’s get back to invocation(notice the parameter: `--cli-binary-format raw-in-base64-out`). From the terminal, run the following command:
+  ```bash
+  $ aws lambda invoke  \
+    --invocation-type RequestResponse  \
+    --function-name HelloWorldJava \
+    --cli-binary-format raw-in-base64-out \
+    --payload \"world\"  outputfile.txt
+  ``` 
+  ```bash
+  $ aws lambda invoke  \
+    --invocation-type RequestResponse  \
+    --function-name HelloWorldJava \
+    --cli-binary-format raw-in-base64-out \
+    --payload  '"hello world"'  outputfile.txt
+  ``` 
+  This should return the following:
+  ```json
+  {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  }
+  ```
+#### Handler: book.ContextLambda::handler
+* Let’s get back to invocation(notice the parameter: `--cli-binary-format raw-in-base64-out`). From the terminal, run the following command:
+  ```bash
+  $ aws lambda invoke  \
+    --invocation-type RequestResponse  \
+    --function-name HelloWorldJava \
+    outputfile.txt
+  ```  
+  This should return the following:
+  ```json
+  {
+    "StatusCode": 200,
+    "ExecutedVersion": "$LATEST"
+  }
+  ```
+  

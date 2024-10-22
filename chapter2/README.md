@@ -44,3 +44,14 @@ Please see https://github.com/symphoniacloud/sam-init-HelloWorldLambdaJava for m
     * https://github.com/aosolorzano/city-tasks-lambda-native-with-dynamodb
   * https://docs.aws.amazon.com/lambda/latest/dg/testing-guide.html
   * https://docs.aws.amazon.com/zh_tw/codebuild/latest/userguide/sample-lambda-sam-gradle.html
+
+# TEARING DOWN RESOURCES
+When you run `sam deploy`, it creates or updates a CloudFormation `stack`—a set of resources that has a name, which you’ve seen already with the `--stack-name` parameter of `sam deploy`.
+
+When you want to clean up your AWS account after trying an example, the simplest method is to find the corresponding CloudFormation stack in the AWS Web Console (in the CloudFormation section) and delete the stack using the **Delete** button.
+
+Alternatively, you can tear down the stack from the command line. For example, to tear down the **HelloWorldLambdaJava** stack, run the following:
+```bash
+$ aws cloudformation delete-stack --stack-name HelloWorldLambdaJava
+```
+The only example where we don’t use CloudFormation is the very first one earlier in this chapter—the HelloWorld JavaScript function—which can be deleted using the Lambda section of the AWS Web Console.

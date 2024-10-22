@@ -11,7 +11,7 @@ Resources:
       Timeout: 2
       Runtime: java17
       MemorySize: 512
-      Handler: book.EnvVarLambda::handler
+      Handler: book.TimeoutLambda::handler
       CodeUri: target/lambda.jar
       Environment:
         Variables:
