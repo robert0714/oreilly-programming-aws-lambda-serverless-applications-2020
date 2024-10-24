@@ -65,3 +65,7 @@ Alternatively, you can tear down the stack from the command line. For example, t
 $ aws cloudformation delete-stack --stack-name ChapterFour 
 ```
 The only example where we don’t use CloudFormation is the very first one earlier in this chapter—the HelloWorld JavaScript function—which can be deleted using the Lambda section of the AWS Web Console.
+
+# Tests
+* https://github.com/aws/serverless-java-container
+* https://docs.aws.amazon.com/lambda/latest/dg/java-samples.html
