@@ -115,7 +115,7 @@
         <plugins>
             <!-- Option 1 -->
             
-            <!-- <plugin>
+            <plugin>
                 <artifactId>maven-assembly-plugin</artifactId>
                 <version>3.7.1</version>
                 <executions>
@@ -146,11 +146,11 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin> -->
+            </plugin>
 
             <!-- Option 2 -->
             <!-- https://docs.aws.amazon.com/lambda/latest/dg/java-samples.html -->
-            <plugin>
+            <!-- <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
                 <version>3.5.3</version>
@@ -185,7 +185,7 @@
                         </goals> 
                     </execution>
                 </executions>
-            </plugin>
+            </plugin> -->
         </plugins>
     </build>
 

@@ -69,3 +69,61 @@ The only example where we don’t use CloudFormation is the very first one earli
 # Tests
 * https://github.com/aws/serverless-java-container
 * https://docs.aws.amazon.com/lambda/latest/dg/java-samples.html
+
+
+# Deployment option
+* Use  maven-shade-plugin
+  * pom.xml
+    ```xml
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.5.3</version>
+                <configuration>
+                            <createDependencyReducedPom>false</createDependencyReducedPom>
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
+                            <shadedClassifierName>aws</shadedClassifierName>
+                            <transformers>
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <mainClass>book.HelloWorld</mainClass>
+                                </transformer>
+                            </transformers> 
+                            <filters>
+                               <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/*.SF</exclude>
+                                        <exclude>META-INF/*.DSA</exclude>
+                                        <exclude>META-INF/*.RSA</exclude>
+                                        <exclude>META-INF/*</exclude>
+                                        <exclude>META-INF/versions/**</exclude>
+                                        <exclude>module-info.class</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters> 
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals> 
+                    </execution>
+                </executions>
+            </plugin>
+    ```
+  * template.yaml
+    ```yaml
+    AWSTemplateFormatVersion: 2010-09-09
+    Transform: AWS::Serverless-2016-10-31
+    Description: Chapter 4
+
+    Resources:
+
+      HelloWorldLambda:
+        Type: AWS::Serverless::Function
+        Properties:
+          Runtime: java17
+          Handler: book.HelloWorld::handler
+          CodeUri: target/programming-lambda-1.0-SNAPSHOT-aws.jar
+    ```  
