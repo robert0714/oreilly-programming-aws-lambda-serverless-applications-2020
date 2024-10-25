@@ -10,7 +10,8 @@ Resources:
   HelloAPIWorldLambda:
     Type: AWS::Serverless::Function
     Properties:
-      Runtime: java8
+      FunctionName: HelloWorldAPIEventSource
+      Runtime: java17
       MemorySize: 512
       Handler: book.HelloWorldAPI::handler
       CodeUri: target/lambda.zip
