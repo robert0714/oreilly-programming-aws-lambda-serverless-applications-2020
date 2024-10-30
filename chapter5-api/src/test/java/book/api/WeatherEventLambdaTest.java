@@ -1,8 +1,6 @@
 package book.api;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.AfterAll; 
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.BeforeAll;
@@ -14,6 +12,7 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers; 
 import org.testcontainers.utility.DockerImageName;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import book.LambdaCompilerHelper;
@@ -86,7 +85,8 @@ class WeatherEventLambdaTest {
 	    private static DynamoDbClient dynamoDbClient;
 	    private static SdkHttpClient  httpClient;
 	    
-	    private static final ObjectMapper objectMapper = new ObjectMapper();
+	    private static final ObjectMapper objectMapper = new ObjectMapper()
+                .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 	     
 	    private static final String TABLE_NAME = "LocationsTable";
 	    private static final String WEATHER_EVENT_FUNCTION = "WeatherEventLambda";
@@ -96,6 +96,10 @@ class WeatherEventLambdaTest {
 	    private static String apiEndpoint;
 	   
 
+	   @AfterAll
+	   public  static void tearDown() throws  Exception {
+	    	cleanupTestData(); 
+	   }
 	   @BeforeAll
 	   public static void setup() {   
 		   StaticCredentialsProvider scp = credentials();
@@ -159,7 +163,7 @@ class WeatherEventLambdaTest {
 	                .functionName(functionName)
 	                .runtime("java17")
 	                .role("arn:aws:iam::000000000000:role/lambda-role")
-	                .handler("book.api." + functionName + "::handleRequest")
+	                .handler("book.api." + functionName + "::handler")
 	                .code(FunctionCode.builder()
 	                        .zipFile(SdkBytes.fromByteArray(zipBytes))
 	                        .build())
@@ -270,10 +274,7 @@ class WeatherEventLambdaTest {
 
 			apiGatewayClient.putIntegration(putIntegrationRequest);
 		}
-	   @AfterAll
-	    static void tearDown() throws IOException {
-	    	cleanupTestData();
-	    }
+	   
 	   private static void cleanupTestData() {
 	        try {
 	            // 清理 DynamoDB 表中的測試數據
@@ -300,8 +301,11 @@ class WeatherEventLambdaTest {
 	        PutItemRequest putItemRequest = PutItemRequest.builder()
 	                .tableName(TABLE_NAME)
 	                .item(Map.of(
-	                        "locationName", AttributeValue.builder().s("Tokyo").build(),
-	                        "temperature", AttributeValue.builder().n("25.5").build()
+		                    "locationName", AttributeValue.builder().s("Oxford, UK").build(),
+		                    "temperature", AttributeValue.builder().n("64").build(),
+		                    "timestamp", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build(),
+		                    "latitude", AttributeValue.builder().n("51.75").build(),
+		                    "longitude", AttributeValue.builder().n("-1.25").build()
 	                ))
 	                .build();
 
@@ -311,26 +315,29 @@ class WeatherEventLambdaTest {
 	        InvokeRequest eventInvokeRequest = InvokeRequest.builder()
 	                .functionName(WEATHER_EVENT_FUNCTION)
 	                .payload(SdkBytes.fromUtf8String(
-	           "{\"httpMethod\":\"POST\",\"body\":\"{\\\"locationName\\\":\\\"Brooklyn, NY\\\" , \\\"temperature\\\":91 , \\\"timestamp\\\":1564428897 , \\\"latitude\\\": 40.70, \\\"longitude\\\": -73.99 }\"  }"
+	           "{ \"body\":\"{\\\"locationName\\\":\\\"Brooklyn, NY\\\" , \\\"temperature\\\":91 , \\\"timestamp\\\":1564428897 , \\\"latitude\\\": 40.70, \\\"longitude\\\": -73.99 }\"  }"
 	                		
 	                		))
 	                .build();
 
 	        InvokeResponse eventResponse = lambdaClient.invoke(eventInvokeRequest);
-	        assertEquals(200, eventResponse.statusCode());
+	        assertEquals(200, eventResponse.statusCode());	        
 	        String result1 = new String(eventResponse.payload().asByteArray(), StandardCharsets.UTF_8);
-	        assertEquals("{\"statusCode\":200,\"body\":\"Weather event processed\"}", result1);
+	        System.out.println(result1);
+	        assertEquals("{\"statusCode\":200,\"body\":\"Brooklyn, NY\"}", result1);
 	        
 	        // 測試Weather Query Lambda
 	        InvokeRequest queryInvokeRequest = InvokeRequest.builder()
 	                .functionName(WEATHER_QUERY_FUNCTION)
-	                .payload(SdkBytes.fromUtf8String("{\"httpMethod\":\"GET\"}"))
+	                .payload(SdkBytes.fromUtf8String("{}"))
 	                .build();
 
 	        InvokeResponse queryResponse = lambdaClient.invoke(queryInvokeRequest);
 	        assertEquals(200, queryResponse.statusCode());
 	        String result2 = new String(queryResponse.payload().asByteArray(), StandardCharsets.UTF_8);
-	        assertTrue(result2.contains("\\\"statusCode\\\":200") || result2.contains("Brooklyn, NY"));
+	         
+	        System.out.println(result2);
+	        assertTrue( result2.contains("\\\"statusCode\\\":200") || result2.contains("Brooklyn, NY"),result2);
 	    } 
 	   @Test
 	    @Order(1)
@@ -398,9 +405,12 @@ class WeatherEventLambdaTest {
 	        PutItemRequest putItemRequest = PutItemRequest.builder()
 	                .tableName(TABLE_NAME)
 	                .item(Map.of(
-	                    "locationName", AttributeValue.builder().s("Osaka").build(),
-	                    "temperature", AttributeValue.builder().n("23.5").build(),
-	                    "timestamp", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build()
+	                    "locationName", AttributeValue.builder().s("Oxford, UK").build(),
+	                    "temperature", AttributeValue.builder().n("64").build(),
+	                    "timestamp", AttributeValue.builder().n(String.valueOf(System.currentTimeMillis())).build(),
+	                    "latitude", AttributeValue.builder().n("51.75").build(),
+	                    "longitude", AttributeValue.builder().n("-1.25").build()
+	                    
 	                ))
 	                .build();
 	        PutItemResponse putItemRresponse =   dynamoDbClient.putItem(putItemRequest);
@@ -411,10 +421,13 @@ class WeatherEventLambdaTest {
 	        // 通過 API Gateway 查詢數據
 	        String response = makeHttpRequest("/locations", "GET", null);
 	        assertNotNull(response);
+	        System.out.println(response);
 	        
 	        // 驗證返回的數據
-	        List<?> locations = objectMapper.readValue(response, List.class);
-	        assertFalse(locations.isEmpty());
+//	        if(response.contains("[")) {
+	        	List<?> locations = objectMapper.readValue(response, List.class);
+		        assertFalse(locations.isEmpty());
+//	        }  
 	    }
 	    
 	    @Test
@@ -428,7 +441,7 @@ class WeatherEventLambdaTest {
 	        assertTrue(response.contains("error") || response.contains("Error"));
 	    }
 
-	    private static String makeHttpRequest(String path, String method, Object body) throws Exception  {
+	    private static String makeHttpRequest(String path, String method, Object body) throws IOException    {
 	    	
 	    	SdkHttpFullRequest.Builder requestBuilder = SdkHttpFullRequest.builder()
 	                .uri(URI.create(apiEndpoint.toString() + path))
@@ -459,10 +472,10 @@ class WeatherEventLambdaTest {
 	            return response ;
 	        }else {
 	            System.out.println("------------------------");
-	           	System.out.println(executeResponse.httpResponse().statusCode());
-	            System.out.println(executeResponse.httpResponse().statusText());
+	           	System.out.println("statusCode: "+ executeResponse.httpResponse().statusCode());
+	            System.out.println("statusText: "+ executeResponse.httpResponse().statusText());
 	            String response = new String(executeResponse.responseBody().get().readAllBytes());
-	            System.out.println(response);
+	            System.out.println("response content: "+response);
 	            return response ;
 	        } 
 	    }

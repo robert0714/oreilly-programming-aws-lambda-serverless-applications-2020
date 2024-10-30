@@ -102,36 +102,56 @@ public class LambdaCompilerHelper {
         try {
             // 獲取當前項目的target目錄
             String projectDir = System.getProperty("user.dir");
-            Path jarPath = findJarFile(Paths.get(projectDir, "target"));
+            Path directoryPath = Paths.get(projectDir, "target"); 
+            Path lambdaZipPath = findLambdaZipFile(directoryPath);  
+            if(lambdaZipPath!=null) {
+            	return Files.readAllBytes(lambdaZipPath);
+            }
             
+            Path jarPath = findJarFile(directoryPath);            
             if (jarPath == null) {
                 // 如果找不到jar檔案，嘗試即時編譯
                 compileProject();
-                jarPath = findJarFile(Paths.get(projectDir, "target"));
                 
+                lambdaZipPath =  findLambdaZipFile(directoryPath);  
+                if(lambdaZipPath!=null) {
+                	return Files.readAllBytes(lambdaZipPath);
+                }
+                
+                
+                jarPath = findJarFile(directoryPath);                
                 if (jarPath == null) {
                     throw new RuntimeException("無法找到或創建Lambda函數的jar檔案");
                 }
             }
-            
             return Files.readAllBytes(jarPath);
         } catch (Exception e) {
             throw new RuntimeException("讀取jar檔案時發生錯誤", e);
         }
     }
-    
-    private static Path findJarFile(Path targetDir) throws IOException {
+     
+    private static Path findJarFile(Path targetDir) throws IOException { 
         // 使用Files.walk來搜尋jar檔案
         try (Stream<Path> walk = Files.walk(targetDir)) {
             return walk
-                .filter(Files::isRegularFile)
+                .filter(Files::isRegularFile) 
                 .filter(p -> p.toString().endsWith(".jar"))
                 .filter(p -> !p.toString().contains("original"))  // 排除original-開頭的jar
                 .filter(p -> !p.toString().contains("-test"))     // 排除測試jar
                 .findFirst()
                 .orElse(null);
         }
-    }
+    } 
+    private static Path findLambdaZipFile(Path targetDir) throws IOException { 
+        // 使用Files.walk來搜尋lambda.zip檔案
+        try (Stream<Path> walk = Files.walk(targetDir)) {
+            return walk
+                .filter(Files::isRegularFile) 
+                .filter(p -> p.toString().endsWith("lambda.zip")) 
+                .findFirst()
+                .orElse(null);
+        }
+    } 
     
     private static void compileProject() {
         try {
