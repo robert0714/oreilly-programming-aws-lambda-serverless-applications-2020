@@ -21,10 +21,50 @@
 		</dependency>
 		<dependency>
 			<groupId>my.groupId</groupId>
-	       <artifactId>single-event-stage</artifactId>
+	        <artifactId>single-event-stage</artifactId>
 	        <version>1.0-SNAPSHOT</version>
 			<scope>test</scope>
 		</dependency> 
+		 <!-- AWS Lambda Java Events -->
+	    <dependency>
+	        <groupId>com.amazonaws</groupId>
+	        <artifactId>aws-lambda-java-events</artifactId>
+	        <scope>test</scope>
+	    </dependency>
+	    <dependency>
+	      <groupId>com.amazonaws</groupId>
+	      <artifactId>aws-lambda-java-tests</artifactId>
+	      <version>1.1.1</version>
+	      <scope>test</scope>
+	    </dependency>
+	    <dependency>
+		      <groupId>com.amazonaws</groupId>
+		      <artifactId>aws-lambda-java-core</artifactId>
+		      <version>1.2.3</version>
+		      <scope>test</scope>
+		 </dependency>  
+	
+	    <!-- AWS SDK v2 Lambda -->
+	    <dependency>
+	        <groupId>software.amazon.awssdk</groupId>
+	        <artifactId>lambda</artifactId> 
+	        <scope>test</scope>
+	    </dependency>
+	
+	    <!-- AWS SDK v2 IAM -->
+	    <dependency>
+	        <groupId>software.amazon.awssdk</groupId>
+	        <artifactId>iam</artifactId> 
+	        <scope>test</scope>
+	    </dependency>
+	    
+	    <!-- AWS Lambda Java Core -->
+	    <dependency>
+	        <groupId>com.amazonaws</groupId>
+	        <artifactId>aws-lambda-java-core</artifactId>
+	        <version>1.2.3</version>
+	        <scope>test</scope>
+	    </dependency>
 		<!-- TestContainers -->
 		<dependency>
 			<groupId>org.testcontainers</groupId>
