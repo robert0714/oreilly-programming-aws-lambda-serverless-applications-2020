@@ -17,13 +17,28 @@ import java.util.Arrays;
 import java.util.List;
 
 public class BulkEventsLambda {
-    private final ObjectMapper objectMapper =
-            new ObjectMapper()
-                    .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES,
-                            false);
-    private final SnsClient snsClient = SnsClient.builder().build();
-    private final S3Client s3Client = S3Client.builder().build();
-    private final String snsTopic = System.getenv("FAN_OUT_TOPIC");
+	private final ObjectMapper objectMapper;
+    private final SnsClient snsClient;
+    private final S3Client s3Client;
+    private final String snsTopic;
+
+    // Default constructor for AWS Lambda
+    public BulkEventsLambda() {
+        this(
+            new ObjectMapper().configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false),
+            SnsClient.builder().build(),
+            S3Client.builder().build(),
+            System.getenv("FAN_OUT_TOPIC")
+        );
+    }
+
+    // Constructor for testing
+    public BulkEventsLambda(ObjectMapper objectMapper, SnsClient snsClient, S3Client s3Client, String snsTopic) {
+        this.objectMapper = objectMapper;
+        this.snsClient = snsClient;
+        this.s3Client = s3Client;
+        this.snsTopic = snsTopic;
+    }
 
     public void handler(S3Event event) {
         event.getRecords().forEach(this::processS3EventRecord);
