@@ -9,9 +9,9 @@ import com.amazonaws.services.logs.AWSLogsClientBuilder;
 import com.amazonaws.services.logs.model.*;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import org.hamcrest.CoreMatchers;
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 
 import java.io.File;
 import java.util.Set;
@@ -45,7 +45,8 @@ public class PipelineIT {
         Thread.sleep(30000);
         String singleEventLambda = resolvePhysicalId("SingleEventLambda");
         Set<String> logMessages = getLogMessages(singleEventLambda);
-        Assert.assertThat(logMessages, CoreMatchers.hasItems(
+        
+        assertThat(logMessages, hasItems(
                 "WeatherEvent{locationName='Brooklyn, NY', temperature=91.0, timestamp=1564428897, longitude=-73.99, latitude=40.7}",
                 "WeatherEvent{locationName='Oxford, UK', temperature=64.0, timestamp=1564428898, longitude=-1.25, latitude=51.75}",
                 "WeatherEvent{locationName='Charlottesville, VA', temperature=87.0, timestamp=1564428899, longitude=-78.47, latitude=38.02}"
@@ -85,5 +86,4 @@ public class PipelineIT {
     private String getLogGroup(String lambdaName) {
         return String.format("/aws/lambda/%s", lambdaName);
     }
-
 }
