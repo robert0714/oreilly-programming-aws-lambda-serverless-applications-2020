@@ -29,6 +29,7 @@ Resources:
     Properties:
       CodeUri: target/lambda.zip
       Handler: book.api.WeatherEventLambda::handler
+      FunctionName: WeatherEventLambda
       Policies:
       - DynamoDBCrudPolicy:
           TableName: !Ref LocationsTable
@@ -44,6 +45,7 @@ Resources:
     Properties:
       CodeUri: target/lambda.zip
       Handler: book.api.WeatherQueryLambda::handler
+      FunctionName: WeatherQueryLambda
       Policies:
         - DynamoDBReadPolicy:
             TableName: !Ref LocationsTable
