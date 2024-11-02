@@ -1,14 +1,18 @@
 package book.api;
 
-import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
-import com.amazonaws.services.dynamodbv2.document.DynamoDB;
-import com.amazonaws.services.dynamodbv2.document.Item;
-import com.amazonaws.services.dynamodbv2.document.Table;
-import com.amazonaws.services.lambda.runtime.Context;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
-import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent;
+
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+
+import software.amazon.awssdk.enhanced.dynamodb.DynamoDbEnhancedClient;
+import software.amazon.awssdk.services.dynamodb.DynamoDbClient;
+
+import java.io.IOException; 
+
+import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyRequestEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayProxyResponseEvent; 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.message.ObjectMessage;
@@ -18,6 +22,10 @@ import java.util.HashMap;
 //import java.io.PrintWriter;
 //import java.io.StringWriter;
 
+
+
+//https://docs.aws.amazon.com/sdk-for-java/latest/developer-guide/java_dynamodb_code_examples.html
+//https://github.com/aws/aws-sdk-java-v2/tree/master/services-custom/dynamodb-enhanced
 public class WeatherEventLambda {
 
     private static Logger logger = LogManager.getLogger();
@@ -25,9 +33,26 @@ public class WeatherEventLambda {
     private final ObjectMapper objectMapper =
             new ObjectMapper()
                     .configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-    private final DynamoDB dynamoDB = new DynamoDB(AmazonDynamoDBClientBuilder.defaultClient());
+    private DDBUtils ddbUtils;
     private final String tableName = System.getenv("LOCATIONS_TABLE");
 
+    public WeatherEventLambda(DDBUtils ddbUtils) {
+        if (ddbUtils == null) {
+          DynamoDbClient ddb = DDBUtils.getDynamoDbClient();
+          DynamoDbEnhancedClient enhancedClient = DynamoDbEnhancedClient.builder()
+            .dynamoDbClient(ddb)
+            .build();
+          this.ddbUtils = new DDBUtils(enhancedClient);
+        } else {
+          this.ddbUtils = ddbUtils;
+        }
+      }
+
+      public WeatherEventLambda() {
+        this(null);
+      }
+    
+    
     public APIGatewayProxyResponseEvent handler(APIGatewayProxyRequestEvent request, Context context) throws IOException {
 
 //        StringWriter stringWriter = new StringWriter();
@@ -42,25 +67,18 @@ public class WeatherEventLambda {
 
         final WeatherEvent weatherEvent = objectMapper.readValue(request.getBody(), WeatherEvent.class);
 
-        final Table table = dynamoDB.getTable(tableName);
-        final Item item = new Item()
-                .withPrimaryKey("locationName", weatherEvent.locationName)
-                .withDouble("temperature", weatherEvent.temperature)
-                .withLong("timestamp", weatherEvent.timestamp)
-                .withDouble("longitude", weatherEvent.longitude)
-                .withDouble("latitude", weatherEvent.latitude);
-        table.putItem(item);
+        String locationName =  this.ddbUtils.persistWeatherEvent(weatherEvent ,tableName);
 
         HashMap<Object, Object> message = new HashMap<>();
         message.put("action", "record");
-        message.put("locationName", weatherEvent.locationName);
-        message.put("temperature", weatherEvent.temperature);
-        message.put("timestamp", weatherEvent.timestamp);
+        message.put("locationName", weatherEvent.getLocationName());
+        message.put("temperature", weatherEvent.getTemperature());
+        message.put("timestamp", weatherEvent.getTimestamp());
 
         logger.info(new ObjectMessage(message));
 
         return new APIGatewayProxyResponseEvent()
                 .withStatusCode(200)
-                .withBody(weatherEvent.locationName);
+                .withBody(locationName);
     }
 }

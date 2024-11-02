@@ -65,7 +65,8 @@ The only example where we don’t use CloudFormation is the very first one earli
     --invocation-type RequestResponse  \
     --function-name WeatherEventLambda \
     --cli-binary-format raw-in-base64-out \
-    --payload '{"locationName":"Brooklyn, NY", "temperature":91, "timestamp":1564428897, "latitude": 40.70, "longitude": -73.99}' outputfile.txt
+    --payload "{ \"body\":\"{\\\"locationName\\\":\\\"Brooklyn, NY\\\" , \\\"temperature\\\":91 , \\\"timestamp\\\":1564428897 , \\\"latitude\\\": 40.70, \\\"longitude\\\": -73.99 }\"  }" \
+      outputfile.txt
   ```
   This should return the following:
   ```json
@@ -97,13 +98,13 @@ First, let’s send some data. The base of the URL is the one from the API Gatew
 ```bash
 $ curl -d '{"locationName":"Brooklyn, NY", "temperature":91,   "timestamp":1564428897, "latitude": 40.70, "longitude": -73.99}' \
   -H "Content-Type: application/json" \
-  -X POST  https://6rx7b8y1va.execute-api.ap-northeast-1.amazonaws.com/Prod/events
+  -X POST  https://ukdi7mhqs8.execute-api.ap-northeast-1.amazonaws.com/Prod/events
 
 Brooklyn, NY
 
 $ curl -d '{"locationName":"Oxford, UK", "temperature":64,  "timestamp":1564428898, "latitude": 51.75, "longitude": -1.25}' \
   -H "Content-Type: application/json" \
-  -X POST  https://6rx7b8y1va.execute-api.ap-northeast-1.amazonaws.com/Prod/events
+  -X POST  https://ukdi7mhqs8.execute-api.ap-northeast-1.amazonaws.com/Prod/events
  
 Oxford, UK
 ```
@@ -113,7 +114,8 @@ This has saved two new events to DynamoDB. You can prove that to yourself by cli
 And now we can use the final part of our application—reading from the API. We can use curl for that again, adding /locations to the API Gateway console URL, for example:
 
 ```bash
-$ curl https://6rx7b8y1va.execute-api.ap-northeast-1.amazonaws.com/Prod/locations
+$ curl https://ukdi7mhqs8.execute-api.ap-northeast-1.amazonaws.com/Prod/locations
+
 [{"locationName":"Oxford, UK","temperature":64.0,"timestamp":1564428898,
   "longitude":-1.25,"latitude":51.75},
   {"locationName":"Brooklyn, NY","temperature":91.0,
