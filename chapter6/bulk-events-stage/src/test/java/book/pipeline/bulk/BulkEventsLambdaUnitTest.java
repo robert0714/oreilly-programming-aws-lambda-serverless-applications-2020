@@ -1,11 +1,11 @@
 package book.pipeline.bulk;
 
 import book.pipeline.common.WeatherEvent;
-import com.fasterxml.jackson.databind.exc.InvalidFormatException; 
+import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.junit.jupiter.api.Assertions; 
+import org.junit.jupiter.api.Assertions;
 
 import uk.org.webcompere.systemstubs.environment.EnvironmentVariables;
 import uk.org.webcompere.systemstubs.jupiter.SystemStub;
@@ -16,20 +16,17 @@ import java.util.List;
 
 @ExtendWith(SystemStubsExtension.class)
 public class BulkEventsLambdaUnitTest {
-	
-	@SystemStub
-	private EnvironmentVariables environmentVariables;
-
+    
+    @SystemStub
+    private EnvironmentVariables environmentVariables;
 
     @BeforeEach 
     public void before() {
-        // Initialization if needed
-		environmentVariables.set(BulkEventsLambda.FAN_OUT_TOPIC_ENV, "test-topic");
+        environmentVariables.set(BulkEventsLambda.FAN_OUT_TOPIC_ENV, "test-topic");
     }
 
     @Test
     public void testReadWeatherEvents() {
-
         // Fixture data
         InputStream inputStream = getClass().getResourceAsStream("/bulk_data.json");
 
@@ -61,7 +58,6 @@ public class BulkEventsLambdaUnitTest {
 
     @Test
     public void testReadWeatherEventsBadData() {
-
         // Fixture data
         InputStream inputStream = getClass().getResourceAsStream("/bad_data.json");
 
@@ -74,7 +70,7 @@ public class BulkEventsLambdaUnitTest {
 
         Assertions.assertNotNull(thrown.getCause());
         Assertions.assertTrue(thrown.getCause() instanceof InvalidFormatException);
-        String msg = thrown.getMessage() ;
+        String msg = thrown.getMessage();
         Assertions.assertTrue(msg.contains("Cannot deserialize value of type `java.lang.Long` from String \"Wrong data type\": not a valid `java.lang.Long` value"));
     }
 
@@ -91,8 +87,7 @@ public class BulkEventsLambdaUnitTest {
         String message = lambda.weatherEventToSnsMessage(weatherEvent);
 
         Assertions.assertEquals(
-                "{\"locationName\":\"Foo, Bar\",\"temperature\":32.0,\"timestamp\":0,\"longitude\":-100.0,\"latitude\":100.0}"
-                , message);
+                "{\"locationName\":\"Foo, Bar\",\"temperature\":32.0,\"timestamp\":0,\"longitude\":-100.0,\"latitude\":100.0}",
+                message);
     }
-
 }
