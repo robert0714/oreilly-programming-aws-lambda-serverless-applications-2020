@@ -20,6 +20,9 @@ When you want to clean up your AWS account after trying an example, the simplest
 
 Alternatively, you can tear down the stack from the command line. For example, to tear down the **chapter8-s3-errors** stack, run the following:
 ```bash
+$ ERROR_BUCKET="$(aws cloudformation describe-stack-resource --stack-name chapter8-s3-errors --logical-resource-id PipelineStartBucket --query 'StackResourceDetail.PhysicalResourceId' --output text)"
+$ aws s3 rm s3://${ERROR_BUCKET}/sampledata.json
+$ aws s3 rm s3://${ERROR_BUCKET} --recursive
 $ aws cloudformation delete-stack --stack-name chapter8-s3-errors
 $ aws s3 rm s3://${CF_BUCKET} --recursive 
 ```
