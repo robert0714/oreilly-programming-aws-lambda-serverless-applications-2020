@@ -19,3 +19,8 @@ To download this complete repository, use [this link](https://github.com/symphon
 Enjoy, and go serverless!
 
 John & Mike
+
+## CloudFormation Infrastructure Composer
+* AWS Infrastructure Composer
+  * Developer Guide: https://docs.aws.amazon.com/infrastructure-composer/latest/dg/using-composer-basics.html
+    * AWS Toolkit for Visual Studio Code : https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode
