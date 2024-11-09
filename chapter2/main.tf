@@ -9,7 +9,6 @@ terraform {
 }
 
 provider "aws" {
-  region = "ap-northeast-1"  
 }
 
 resource "aws_lambda_function" "HelloWorldLambda" {
@@ -17,8 +16,8 @@ resource "aws_lambda_function" "HelloWorldLambda" {
   handler       = "book.HelloWorld::handler"
   runtime       = "java17"
   memory_size   = 512
-  filename      = "target/lambda.jar"  
-  
+  filename      = "target/lambda.jar"
+
   role = aws_iam_role.lambda_exec.arn
 }
 

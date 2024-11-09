@@ -8,8 +8,7 @@ terraform {
   required_version = ">= 1.2.0"
 }
 # Configure AWS Provider
-provider "aws" {
-  region = "ap-northeast-1"  
+provider "aws" { 
 }
 
 # Create IAM role for Lambda
