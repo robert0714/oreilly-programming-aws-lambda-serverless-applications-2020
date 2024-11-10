@@ -24,6 +24,25 @@ To deploy:
 ```
 $ sam deploy --s3-bucket $CF_BUCKET --stack-name ChapterFiveApi --capabilities CAPABILITY_IAM
 ```
+or OpenTofu, the open source fork of Terraform
+```bash
+$ tofu fmt
+$ tofu init 
+$ tofu validate
+$ tofu apply
+```
+* Some problem in -> Deploy serverless applications with AWS Lambda and API Gateway -> 
+  * https://github.com/hashicorp/learn-terraform-lambda-api-gateway/tree/main
+  * https://serverlessland.com/content/guides/building-serverless-applications-with-terraform/05-api-gateway
+  * https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/using-samcli-terraform.html
+
+###  Testing the API locally with SAM
+* Run the following command from the directory where the main.tf file is located.
+  ```bash
+  sam local start-api --hook-name terraform
+  ```
+* This is what output will look like
+
 
 # TEARING DOWN RESOURCES
 When you run `sam deploy`, it creates or updates a CloudFormation `stack`—a set of resources that has a name, which you’ve seen already with the `--stack-name` parameter of `sam deploy`.
@@ -34,21 +53,25 @@ Alternatively, you can tear down the stack from the command line. For example, t
 ```bash
 $ aws cloudformation delete-stack --stack-name ChapterFiveApi
 ```
-
+or OpenTofu, the open source fork of Terraform
+```bash
+$ tofu destroy
+```
 
 ## Test
 First, let’s send some data. The base of the URL is the one from the API Gateway console, but we append /events. We can call our API using curl, for example, as follows (substitute in your URL):
 
 ```bash
-$ curl -d '{"locationName":"Brooklyn, NY", "temperature":91,   "timestamp":1564428897, "latitude": 40.70, "longitude": -73.99}' \
+$  curl -v -d '{"locationName":"Brooklyn, NY", "temperature":91, "timestamp":1564428897, "latitude": 40.70, "longitude": -73.99}' \
   -H "Content-Type: application/json" \
-  -X POST  https://lxrswkfwhk.execute-api.ap-northeast-1.amazonaws.com/Prod/events
+  -H "Accept: application/json" \
+  -X POST https://v4kh23prz3.execute-api.ap-northeast-1.amazonaws.com/Prod/events
 
 Brooklyn, NY
 
 $ curl -d '{"locationName":"Oxford, UK", "temperature":64,  "timestamp":1564428898, "latitude": 51.75, "longitude": -1.25}' \
   -H "Content-Type: application/json" \
-  -X POST  https://lxrswkfwhk.execute-api.ap-northeast-1.amazonaws.com/Prod/events
+  -X POST   https://v4kh23prz3.execute-api.ap-northeast-1.amazonaws.com/Prod/events
  
 Oxford, UK
 ```
@@ -58,7 +81,7 @@ This has saved two new events to DynamoDB. You can prove that to yourself by cli
 And now we can use the final part of our application—reading from the API. We can use curl for that again, adding /locations to the API Gateway console URL, for example:
 
 ```bash
-$ curl https://lxrswkfwhk.execute-api.ap-northeast-1.amazonaws.com/Prod/locations
+$ curl  https://v4kh23prz3.execute-api.ap-northeast-1.amazonaws.com/Prod/locations
 [{"locationName":"Oxford, UK","temperature":64.0,"timestamp":1564428898,
   "longitude":-1.25,"latitude":51.75},
   {"locationName":"Brooklyn, NY","temperature":91.0,
