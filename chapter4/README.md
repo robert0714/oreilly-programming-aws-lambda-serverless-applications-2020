@@ -28,6 +28,13 @@ To deploy:
 ```
 $ sam deploy --s3-bucket $CF_BUCKET --stack-name ChapterFour --capabilities CAPABILITY_IAM
 ```
+or OpenTofu, the open source fork of Terraform
+```bash
+$ tofu fmt
+$ tofu init 
+$ tofu validate
+$ tofu apply
+```
 
 To list the stack resources:
 ```
@@ -63,6 +70,10 @@ When you want to clean up your AWS account after trying an example, the simplest
 Alternatively, you can tear down the stack from the command line. For example, to tear down the **HelloWorldLambdaJava** stack, run the following:
 ```bash
 $ aws cloudformation delete-stack --stack-name ChapterFour 
+```
+or OpenTofu, the open source fork of Terraform
+```bash
+$ tofu destroy
 ```
 The only example where we don’t use CloudFormation is the very first one earlier in this chapter—the HelloWorld JavaScript function—which can be deleted using the Lambda section of the AWS Web Console.
 
