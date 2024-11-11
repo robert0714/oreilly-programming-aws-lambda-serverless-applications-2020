@@ -65,13 +65,13 @@ First, let’s send some data. The base of the URL is the one from the API Gatew
 $  curl -v -d '{"locationName":"Brooklyn, NY", "temperature":91, "timestamp":1564428897, "latitude": 40.70, "longitude": -73.99}' \
   -H "Content-Type: application/json" \
   -H "Accept: application/json" \
-  -X POST https://v4kh23prz3.execute-api.ap-northeast-1.amazonaws.com/Prod/events
+  -X POST https://g63mobcz50.execute-api.ap-northeast-1.amazonaws.com/Prod/events
 
 Brooklyn, NY
 
 $ curl -d '{"locationName":"Oxford, UK", "temperature":64,  "timestamp":1564428898, "latitude": 51.75, "longitude": -1.25}' \
   -H "Content-Type: application/json" \
-  -X POST   https://v4kh23prz3.execute-api.ap-northeast-1.amazonaws.com/Prod/events
+  -X POST  https://g63mobcz50.execute-api.ap-northeast-1.amazonaws.com/Prod/events
  
 Oxford, UK
 ```
@@ -81,7 +81,7 @@ This has saved two new events to DynamoDB. You can prove that to yourself by cli
 And now we can use the final part of our application—reading from the API. We can use curl for that again, adding /locations to the API Gateway console URL, for example:
 
 ```bash
-$ curl  https://v4kh23prz3.execute-api.ap-northeast-1.amazonaws.com/Prod/locations
+$ curl https://g63mobcz50.execute-api.ap-northeast-1.amazonaws.com/Prod/locations
 [{"locationName":"Oxford, UK","temperature":64.0,"timestamp":1564428898,
   "longitude":-1.25,"latitude":51.75},
   {"locationName":"Brooklyn, NY","temperature":91.0,

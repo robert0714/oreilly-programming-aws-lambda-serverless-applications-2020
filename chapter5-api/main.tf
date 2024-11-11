@@ -1,5 +1,14 @@
 # Provider configuration
-provider "aws" { 
+provider "aws" {
+}
+
+# add common tags to all resources
+locals {
+  common_tags = {
+    "lambda:createdBy"              = "SAM"
+    "serverless:application"        = "ChapterFiveApi"
+    "aws:cloudformation:logical-id" = "WeatherAPI"
+  }
 }
 
 # DynamoDB table
@@ -12,6 +21,9 @@ resource "aws_dynamodb_table" "locations_table" {
     name = "locationName"
     type = "S"
   }
+  tags = merge(local.common_tags, {
+    "Name" = "LocationsTable"
+  })
 }
 
 # Lambda function IAM role
@@ -99,6 +111,11 @@ resource "aws_lambda_function" "weather_event_lambda" {
       LOCATIONS_TABLE = aws_dynamodb_table.locations_table.name
     }
   }
+
+  tags = merge(local.common_tags, {
+    "Name"                 = "WeatherEventLambda"
+    "lambda:applicationId" = "ChapterFiveApi"
+  })
 }
 
 resource "aws_lambda_function" "weather_query_lambda" {
@@ -115,12 +132,21 @@ resource "aws_lambda_function" "weather_query_lambda" {
       LOCATIONS_TABLE = aws_dynamodb_table.locations_table.name
     }
   }
+
+  tags = merge(local.common_tags, {
+    "Name"                 = "WeatherQueryLambda"
+    "lambda:applicationId" = "ChapterFiveApi"
+  })
 }
 
 # API Gateway
 resource "aws_api_gateway_rest_api" "weather_api" {
   name        = "WeatherAPI"
   description = "Weather API Gateway"
+
+  tags = merge(local.common_tags, {
+    "Name" = "WeatherAPI"
+  })
 }
 
 # API Gateway resource for /events
@@ -225,4 +251,35 @@ resource "aws_api_gateway_rest_api_policy" "api_policy" {
 # Output the API endpoint URL
 output "api_endpoint" {
   value = aws_api_gateway_stage.api_stage.invoke_url
+}
+
+# 如果需要，也可以添加 Application Insights 監控
+resource "aws_applicationinsights_application" "weather_app" {
+  resource_group_name = "ChapterFiveApi"
+  auto_config_enabled = true
+
+  depends_on = [
+    aws_lambda_function.weather_event_lambda,
+    aws_lambda_function.weather_query_lambda,
+    aws_dynamodb_table.locations_table
+  ]
+}
+
+# 添加資源組
+resource "aws_resourcegroups_group" "weather_app" {
+  name = "ChapterFiveApi"
+
+  resource_query {
+    query = jsonencode({
+      ResourceTypeFilters = ["AWS::AllSupported"]
+      TagFilters = [
+        {
+          Key    = "serverless:application"
+          Values = ["ChapterFiveApi"]
+        }
+      ]
+    })
+  }
+
+  tags = local.common_tags
 }
