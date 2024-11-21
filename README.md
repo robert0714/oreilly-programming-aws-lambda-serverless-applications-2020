@@ -24,3 +24,15 @@ John & Mike
 * AWS Infrastructure Composer
   * Developer Guide: https://docs.aws.amazon.com/infrastructure-composer/latest/dg/using-composer-basics.html
     * AWS Toolkit for Visual Studio Code : https://marketplace.visualstudio.com/items?itemName=AmazonWebServices.aws-toolkit-vscode
+    
+
+## AWS Serverless Application Model (SAM)
+* https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/what-is-sam.html
+* AWS SAM transform:  https://github.com/aws/serverless-application-model
+  * AWS Serverless Developer Experience: https://catalog.us-east-1.prod.workshops.aws/workshops/9a27e484-7336-4ed0-8f90-f2747e4ac65c/en-US
+    * AWS SAM resources and properties:   https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/sam-specification-resources-and-properties.html
+    * Tutorial: Deploy a Hello World application with AWS SAM:  https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-getting-started-hello-world.html
+
+    
+* AWS SAM CLI: https://github.com/aws/aws-sam-cli
+  * https://docs.aws.amazon.com/serverless-application-model/latest/developerguide/serverless-sam-cli-command-reference.html
