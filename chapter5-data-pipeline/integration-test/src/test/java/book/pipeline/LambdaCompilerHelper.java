@@ -1,16 +1,11 @@
 package book.pipeline;
 
-
-import javax.tools.*;
-import java.io.*;
-import java.net.URI;
-import java.nio.ByteBuffer;
+ 
+import java.io.*; 
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.*;
-import java.util.stream.Stream;
-import java.util.zip.*;
+import java.nio.file.Paths; 
+import java.util.stream.Stream; 
 
 public class LambdaCompilerHelper {
     //bulk-events-stage/target/lambda.zip
@@ -20,7 +15,12 @@ public class LambdaCompilerHelper {
             // 獲取當前項目的target目錄
             String projectDir = System.getProperty("user.dir");
             String homePomPath = Paths.get(projectDir).getParent().toFile().getAbsolutePath();
-            Path calculatedPath = Paths.get(homePomPath ,otherDir );
+            Path calculatedPath;
+			if (otherDir != null) {
+				calculatedPath = Paths.get(homePomPath ,otherDir );
+			}else {
+				calculatedPath = Paths.get( projectDir );
+			}
             
             Path directoryPath = Paths.get(calculatedPath.toFile().getAbsolutePath(), "target"); 
             
@@ -54,7 +54,7 @@ public class LambdaCompilerHelper {
      
     private static Path findJarFile(Path targetDir) throws IOException { 
         // 使用Files.walk來搜尋jar檔案
-        try (Stream<Path> walk = Files.walk(targetDir)) {
+        try (Stream<Path> walk = Files.walk(targetDir , 1 )) {
             return walk
                 .filter(Files::isRegularFile) 
                 .filter(p -> p.toString().endsWith(".jar"))
@@ -66,10 +66,10 @@ public class LambdaCompilerHelper {
     } 
     private static Path findLambdaZipFile(Path targetDir) throws IOException { 
         // 使用Files.walk來搜尋lambda.zip檔案
-        try (Stream<Path> walk = Files.walk(targetDir)) {
+        try (Stream<Path> walk = Files.walk(targetDir , 1)) {
             return walk
                 .filter(Files::isRegularFile) 
-                .filter(p -> p.toString().endsWith("lambda.zip")) 
+                .filter(p -> p.toString().endsWith(".zip")) 
                 .findFirst()
                 .orElse(null);
         }

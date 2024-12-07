@@ -3,9 +3,7 @@ package book.pipeline ;
 
 import book.pipeline.bulk.BulkEventsLambda;
 import book.pipeline.common.WeatherEvent;
-import book.pipeline.single.SingleEventLambda;
-import com.amazonaws.services.lambda.runtime.events.S3Event;
-import com.amazonaws.services.lambda.runtime.events.SNSEvent;
+import book.pipeline.single.SingleEventLambda; 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,10 +13,8 @@ import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.DockerImageName;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
-import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
-import software.amazon.awssdk.awscore.exception.AwsServiceException;
-import software.amazon.awssdk.core.SdkBytes;
-import software.amazon.awssdk.core.exception.SdkClientException;
+import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider; 
+import software.amazon.awssdk.core.SdkBytes; 
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.lambda.LambdaClient;
@@ -31,12 +27,9 @@ import software.amazon.awssdk.services.sns.model.CreateTopicResponse;
 import software.amazon.awssdk.services.iam.IamClient;
 import software.amazon.awssdk.services.iam.model.*;
 
-import java.io.*;
-import java.nio.file.Files;
+import java.io.*; 
 import java.util.ArrayList;
-import java.util.List;
-import java.util.zip.ZipEntry;
-import java.util.zip.ZipOutputStream;
+import java.util.List; 
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.testcontainers.containers.localstack.LocalStackContainer.Service.*;
@@ -46,7 +39,7 @@ public class PipelineIntegrationTestV2 {
 
     @Container
     static LocalStackContainer localstack = new LocalStackContainer(
-            DockerImageName.parse("localstack/localstack:3.8")
+            DockerImageName.parse("localstack/localstack:4")
             ).withServices(S3, SNS, LAMBDA, IAM ,CLOUDWATCH  )
     		 .withEnv("DEBUG", "1")
     		 .withEnv("LAMBDA_EXECUTOR", "local")

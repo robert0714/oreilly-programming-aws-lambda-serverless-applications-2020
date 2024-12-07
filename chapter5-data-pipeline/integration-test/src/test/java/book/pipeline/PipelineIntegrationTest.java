@@ -26,8 +26,7 @@ import software.amazon.awssdk.services.sns.model.CreateTopicResponse;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.PrintStream;
-import java.net.URI;
+import java.io.PrintStream; 
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +39,7 @@ public class PipelineIntegrationTest {
 
     @Container
     static LocalStackContainer localstack = new LocalStackContainer(
-            DockerImageName.parse("localstack/localstack:3.8")
+            DockerImageName.parse("localstack/localstack:4")
             ).withServices(S3, SNS);
 
     private static S3Client s3Client;
