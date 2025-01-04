@@ -20,6 +20,10 @@ Enjoy, and go serverless!
 
 John & Mike
 
+# Official Tutorials
+* [Building Lambda functions with Java](https://docs.aws.amazon.com/zh_tw/lambda/latest/dg/lambda-java.html)
+  * [Java sample applications for AWS Lambda](https://docs.aws.amazon.com/zh_tw/lambda/latest/dg/java-samples.html)
+
 ## CloudFormation Infrastructure Composer
 * AWS Infrastructure Composer
   * Developer Guide: https://docs.aws.amazon.com/infrastructure-composer/latest/dg/using-composer-basics.html
